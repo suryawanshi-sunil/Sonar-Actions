@@ -28,4 +28,4 @@ jobs:
           echo 'export PATH=$PATH:/opt/sonar-scanner/bin' >> $GITHUB_ENV
           
       - name: Run SonarScanner
-        run: sonar-scanner -Dsonar.projectKey=your_project_key -Dsonar.host.url=https://sonarcloud.io -Dsonar.login=${{ secrets.SONAR_TOKEN }}
+        run: sonar-scanner -Dsonar.projectKey=SonarPR -Dsonar.host.url=http://localhost:9000 -Dsonar.login=${{ secrets.SONAR_TOKEN }}
