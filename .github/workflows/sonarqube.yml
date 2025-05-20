@@ -3,7 +3,7 @@ name: SonarQube PR Analysis
 on:
   pull_request:
     branches:
-      - main  # or your default branch
+      - main  # Adjust based on your default branch
 
 jobs:
   sonarqube:
@@ -22,10 +22,21 @@ jobs:
 
       - name: Install SonarScanner
         run: |
-          wget https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-4.6.2.2472-linux.zip
-          unzip sonar-scanner-cli-4.6.2.2472-linux.zip
-          sudo mv sonar-scanner-4.6.2.2472-linux /opt/sonar-scanner
-          echo 'export PATH=$PATH:/opt/sonar-scanner/bin' >> $GITHUB_ENV
-          
+          wget https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-5.0.1.3006-linux.zip
+          unzip sonar-scanner-cli-5.0.1.3006-linux.zip
+          sudo mv sonar-scanner-5.0.1.3006-linux /opt/sonar-scanner
+          echo "/opt/sonar-scanner/bin" >> $GITHUB_PATH
+          echo "SONAR_SCANNER_HOME=/opt/sonar-scanner" >> $GITHUB_ENV
+          echo "PATH=$SONAR_SCANNER_HOME/bin:$PATH" >> $GITHUB_ENV
+
+      - name: Verify SonarScanner Installation
+        run: sonar-scanner -h
+
       - name: Run SonarScanner
-        run: sonar-scanner -Dsonar.projectKey=SonarPR -Dsonar.host.url=http://localhost:9000 -Dsonar.login=${{ secrets.SONAR_TOKEN }}
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: |
+          sonar-scanner \
+            -Dsonar.projectKey=SonarPR \
+            -Dsonar.host.url=http://localhost:9000 \
+            -Dsonar.login=${{ secrets.SONAR_TOKEN }}
